@@ -1,25 +1,29 @@
-function updateBanner() {
-	const button = document.querySelector(`data-test-selector="upload-video-player__banner"`);
-	button.click();
+const puppeteer = require("puppeteer")
 
-	var upload;
+updateBanner();
 
-	setTimeout(() => {
-		upload = document.querySelector(`data-a-target="file-picker-input"`);
-		simulateDrop();
-	}, 200);
+async function updateBanner() {
 
-	upload.ondrop = function (e) {
-		this.className = '';
-		e.preventDefault();
-		readfiles(e.dataTransfer.files);
-	};
+	const browser = await puppeteer.launch({headless: false, slowMo: 1000, userDataDir: "./user_data"});
+	const page = await browser.newPage();
+	await page.goto('https://dashboard.twitch.tv/u/the_devero/settings/channel');
+	await page.click('div[class="ScTextWrapper-sc-18v7095-1 eKkyLe"]');
+	console.log('On needed page.');
 
-	function simulateDrop() {
-		const fileInput = require('./images/japan.png');
-		holder.ondrop({
-			dataTransfer: { files: [fileInput] },
-			preventDefault: function () {},
-		});
-	}
+	await page.click('button[class="ScCoreButton-sc-1qn4ixc-0 ScCoreButtonSecondary-sc-1qn4ixc-2 ffyxRu kgzEiA"]');
+	console.log('Pushed upload button.');
+
+    const [fileChooser] = await Promise.all([
+        page.waitForFileChooser(),
+		page.click('input[data-a-target="file-picker-input"]')
+    ]);
+	console.log('Got fileUpload');
+	
+
+	await fileChooser.accept(['./images/japan.png']);
+
+	console.log('Accepted.');
+	
+	console.log('Click!');
+
 }
