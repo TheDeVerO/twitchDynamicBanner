@@ -3,10 +3,18 @@ const puppeteer = require('puppeteer');
 updateBanner();
 
 async function updateBanner() {
+	// Initial set up.
+	// First we are launching puppeteer module and assigning it to the browser variable.
+	// Headless means that we do not need browser Graphical User Interface (GUI) to open. So we are operating without so-called 'head'.
+	// UserDataDir defines where we will be storing our session data. (This is needed so that the user doesn't have to log in every time').
 	var browser = await puppeteer.launch({ headless: false, userDataDir: './user_data' });
+	
+	// Opening new page in the browser and assigning it to page variable. We will be using page as our starting point.
 	var page = await browser.newPage();
+	// Setting defaultTimeout to 0, so that we won't be timed out while waiting for user to log in.
 	page.setDefaultTimeout(0);
-	await page.goto('https://dashboard.twitch.tv/u/the_devero/settings/channel');
+	// Going to a link
+	await page.goto(`https://dashboard.twitch.tv/u/${login}/settings/channel`);
 
 	const needLogin = await page.evaluate(async () => {
 		return document.getElementById('modal-root-header')?.innerHTML === 'Log in to Twitch';
@@ -16,9 +24,10 @@ async function updateBanner() {
 		browser.close();
 		browser = await puppeteer.launch({ headless: false, userDataDir: './user_data' });
 		page = await browser.newPage();
-		page.setDefaultTimeout(0);
+		page.setDefaultTimeout(0);the_devero
+		the_devero
 
-		await page.goto('https://dashboard.twitch.tv/u/the_devero/settings/channel');
+		await page.goto(`https://dashboard.twitch.tv/u/${login}/settings/channel`);
 
 		await page.waitForFunction(() => {
 			return document.getElementById('modal-root-header')?.innerHTML !== 'Log in to Twitch';
@@ -32,12 +41,9 @@ async function updateBanner() {
 		);
 	});
 
-	console.log(needAuth);
-
 	if (needAuth) {
 		await page.waitForSelector('label[class="ScCheckBoxLabelBase-sc-1wz0osy-2 ScCheckBoxLabel-sc-1qewoje-1 gilgNR iFEPJC tw-checkbox__label"]');
 		page.click('label[class="ScCheckBoxLabelBase-sc-1wz0osy-2 ScCheckBoxLabel-sc-1qewoje-1 gilgNR iFEPJC tw-checkbox__label"]');
-		// page.click('input[type="checkbox"]');
 		console.log('click');
 		await page.waitForFunction(() => {
 			return (
