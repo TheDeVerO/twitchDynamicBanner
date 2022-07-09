@@ -1,6 +1,15 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
+const readline = require("readline");
 
-updateBanner();
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+var config = require('./config');
+
+main();
 
 async function updateBanner() {
 	// Initial set up.
@@ -74,4 +83,35 @@ async function updateBanner() {
 
 	// Closing the browser to prevent memory leaks.
 	browser.close();
+}
+
+async function createConfig() {
+
+	const newConfig = {};
+
+	rl.question('Twitch Login:', (answer) => {
+		newConfig.login = answer;
+	})
+	// rl.question()
+
+	
+	fs.writeFileSync('./config.json', JSON.stringify(newConfig));
+}
+
+function main () {
+
+	if (!config) {
+		config = await createConfig();
+	}
+	
+	var now = new Date();
+	var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0, 0) - now;
+	if (millisTill10 < 0) {
+		// millisTill10 += 86400000; // it's after 10am, try 10am tomorrow.
+	}
+	setTimeout(function () {
+		// ...
+	}, millisTill10);
+	
+	updateBanner();
 }
