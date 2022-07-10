@@ -1,10 +1,10 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
-const readline = require("readline");
+const readline = require('readline');
 
 const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
+	input: process.stdin,
+	output: process.stdout,
 });
 
 var config = require('./config');
@@ -86,24 +86,39 @@ async function updateBanner() {
 }
 
 async function createConfig() {
+	const http = require('http');
+	const fs = require('fs');
+	const open = require('open');
 
-	const newConfig = {};
+	const PORT = 8080;
 
-	rl.question('Twitch Login:', (answer) => {
-		newConfig.login = answer;
-	})
-	// rl.question()
+	fs.readFile('./index.html', function (err, html) {
+		if (err) throw err;
 
-	
-	fs.writeFileSync('./config.json', JSON.stringify(newConfig));
+		http.createServer(function (request, response) {
+			response.writeHeader(200, { 'Content-Type': 'text/html' });
+			response.write(html);
+			response.end();
+		}).listen(PORT);
+	});
+
+	open('http://localhost:8080');
+
+	// const newConfig = {};
+
+	// rl.question('Twitch Login:', (answer) => {
+	// 	newConfig.login = answer;
+	// });
+	// rl.question();
+
+	// fs.writeFileSync('./config.json', JSON.stringify(newConfig));
 }
 
-function main () {
-
-	if (!config) {
-		config = await createConfig();
+function main() {
+	if (!config || config === {}) {
+		config = createConfig();
 	}
-	
+
 	var now = new Date();
 	var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0, 0) - now;
 	if (millisTill10 < 0) {
@@ -112,6 +127,6 @@ function main () {
 	setTimeout(function () {
 		// ...
 	}, millisTill10);
-	
+
 	updateBanner();
 }
