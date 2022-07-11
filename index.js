@@ -12,7 +12,7 @@ var count = 1;
 
 main();
 
-async function updateBanner(count) {
+async function updateBanner(index) {
 	// Initial set up.
 	var browser = await puppeteer.launch({ headless: true, userDataDir: './user_data' });
 	var page = await browser.newPage();
@@ -77,7 +77,7 @@ async function updateBanner(count) {
 	console.log('Got fileUpload');
 
 	// Uploading the file.
-	await fileChooser.accept(['./images/japan.png']);
+	await fileChooser.accept([`./images/${config[index].file}`]);
 
 	// Waiting for 10 seconds for upload to complete.
 	await page.waitForTimeout(10000);
@@ -86,34 +86,34 @@ async function updateBanner(count) {
 	browser.close();
 }
 
-async function createConfig() {
-	const http = require('http');
-	const fs = require('fs');
-	const open = require('open');
+// async function createConfig() {
+// 	const http = require('http');
+// 	const fs = require('fs');
+// 	const open = require('open');
 
-	const PORT = 8080;
+// 	const PORT = 8080;
 
-	fs.readFile('./index.html', function (err, html) {
-		if (err) throw err;
+// 	fs.readFile('./index.html', function (err, html) {
+// 		if (err) throw err;
 
-		http.createServer(function (request, response) {
-			response.writeHeader(200, { 'Content-Type': 'text/html' });
-			response.write(html);
-			response.end();
-		}).listen(PORT);
-	});
+// 		http.createServer(function (request, response) {
+// 			response.writeHeader(200, { 'Content-Type': 'text/html' });
+// 			response.write(html);
+// 			response.end();
+// 		}).listen(PORT);
+// 	});
 
-	open('http://localhost:8080');
+// 	open('http://localhost:8080');
 
-	// const newConfig = {};
+// 	// const newConfig = {};
 
-	// rl.question('Twitch Login:', (answer) => {
-	// 	newConfig.login = answer;
-	// });
-	// rl.question();
+// 	// rl.question('Twitch Login:', (answer) => {
+// 	// 	newConfig.login = answer;
+// 	// });
+// 	// rl.question();
 
-	// fs.writeFileSync('./config.json', JSON.stringify(newConfig));
-}
+// 	// fs.writeFileSync('./config.json', JSON.stringify(newConfig));
+// }
 
 function getTime(count) {
 	console.log(`Counter: ${count}`);
