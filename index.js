@@ -8,10 +8,11 @@ const rl = readline.createInterface({
 });
 
 var config = require('./config');
+var count = 1;
 
 main();
 
-async function updateBanner() {
+async function updateBanner(count) {
 	// Initial set up.
 	var browser = await puppeteer.launch({ headless: true, userDataDir: './user_data' });
 	var page = await browser.newPage();
@@ -114,19 +115,48 @@ async function createConfig() {
 	// fs.writeFileSync('./config.json', JSON.stringify(newConfig));
 }
 
-function main() {
+function getTime(count) {
+	console.log(`Counter: ${count}`);
+	var now = new Date();
+	var millsTillChange = new Date(now.getFullYear(), now.getMonth(), now.getDate(), config[count].time, 0, 0, 0) - now;
+
+	while (millsTillChange <= 0) {
+		if (count > 2) {
+			console.log(count);
+			count = 1;
+			millsTillChange += 86400000;
+		} else {
+			console.log(count);
+			count++;
+			millsTillChange = getTime(count);
+		}
+	}
+	return millsTillChange;
+}
+
+function updateHandler(millsTillChange) {
+	setTimeout(function () {
+		updateBanner(count);
+		updateHandler(count, getTime(count));
+	}, millsTillChange);
+	// count = count > 2 ? 1 : +1;
+}
+
+async function main() {
+	var currentBanner;
 	if (!config || config === {}) {
 		config = createConfig();
 	}
 
-	var now = new Date();
-	var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0, 0) - now;
-	if (millisTill10 < 0) {
-		// millisTill10 += 86400000; // it's after 10am, try 10am tomorrow.
-	}
-	setTimeout(function () {
-		// ...
-	}, millisTill10);
+	var millsTillChange = getTime(count);
 
-	updateBanner();
+	if (count - 1 === 0) {
+		currentBanner = 3;
+	} else {
+		currentBanner = count - 1;
+	}
+
+	console.log(`Current banner should be ${config[currentBanner].name}`);
+
+	updateHandler(millsTillChange);
 }
