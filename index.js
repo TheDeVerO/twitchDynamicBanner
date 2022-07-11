@@ -7,7 +7,24 @@ const rl = readline.createInterface({
 	output: process.stdout,
 });
 
-var config = require('./config');
+const config = {
+	1: {
+		time: '7',
+		file: '1.png',
+		name: 'Morning',
+	},
+	2: {
+		time: '13',
+		file: '2.png',
+		name: 'Afternoon',
+	},
+	3: {
+		time: '18',
+		file: '3.png',
+		name: 'Evening',
+	},
+};
+
 var count = 1;
 
 main();
