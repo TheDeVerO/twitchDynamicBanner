@@ -1,17 +1,17 @@
 {
 	"1": {
 		"time": "7",
-		"image": "1.png",
+		"file": "1.png",
 		"name": "Morning"
 	},
 	"2": {
 		"time": "13",
-		"image": "2.png",
+		"file": "2.png",
 		"name": "Afternoon"
 	},
 	"3": {
 		"time": "18",
-		"image": "3.png",
+		"file": "3.png",
 		"name": "Evening"
 	}
 }
