@@ -1,13 +1,19 @@
 {
-  "scripts": {
-    "build": "webpack --config webpack.config.js --mode development"
-  },
-  "dependencies": {
-    "open": "^8.4.0",
-    "puppeteer": "^15.3.1",
-    "webpack": "^5.73.0"
-  },
-  "devDependencies": {
-    "webpack-cli": "^4.10.0"
-  }
+	"scripts": {
+		"build": "webpack --config webpack.config.js --mode development"
+	},
+	"bin": "./dist/bundle.js",
+	"pkg": {
+		"targets": [
+			"node10-win-x64"
+		]
+	},
+	"dependencies": {
+		"open": "^8.4.0",
+		"puppeteer": "^15.3.1",
+		"webpack": "^5.73.0"
+	},
+	"devDependencies": {
+		"webpack-cli": "^4.10.0"
+	}
 }
