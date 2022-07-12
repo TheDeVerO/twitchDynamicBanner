@@ -1,9 +1,11 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
+const login = 'the_devero'
+
 const config = {
 	1: {
-		time: '7',
+		time: '6',
 		file: '1.png',
 		name: 'Morning',
 	},
@@ -19,7 +21,7 @@ const config = {
 	},
 };
 
-var count = 1;
+var count;
 
 main();
 
@@ -126,18 +128,20 @@ async function updateBanner(index) {
 // 	// fs.writeFileSync('./config.json', JSON.stringify(newConfig));
 // }
 
-function getTime(count) {
-	console.log(`Counter: ${count}`);
+function getTime(index) {
 	var now = new Date();
 	var millsTillChange = new Date(now.getFullYear(), now.getMonth(), now.getDate(), config[count].time, 0, 0, 0) - now;
+	console.log(millsTillChange);
+
+	console.log(config[count].time);
 
 	while (millsTillChange <= 0) {
-		if (count > 2) {
-			console.log(count);
+		console.log(`getTime() count: ${count}`)
+		if (count > 3) {
 			count = 1;
 			millsTillChange += 86400000;
+			console.log('bruh');
 		} else {
-			console.log(count);
 			count++;
 			millsTillChange = getTime(count);
 		}
@@ -148,7 +152,8 @@ function getTime(count) {
 function updateHandler(millsTillChange) {
 	setTimeout(function () {
 		updateBanner(count);
-		updateHandler(count, getTime(count));
+		updateHandler(getTime(count));
+
 	}, millsTillChange);
 	// count = count > 2 ? 1 : +1;
 }
@@ -157,7 +162,7 @@ async function main() {
 	var CW;
 	try {
 		CW = require('node-hide-console-window');
-		CW.hideConsole();
+		// CW.hideConsole();
 	} catch (e) {
 		console.warn(`Can't hide window, missing hide-console-window`);
 	}
@@ -200,7 +205,7 @@ async function main() {
 	if (!config || config === {}) {
 		config = createConfig();
 	}
-
+	count = 1
 	var millsTillChange = getTime(count);
 
 	if (count - 1 === 0) {
@@ -209,7 +214,8 @@ async function main() {
 		currentBanner = count - 1;
 	}
 
+	console.log(`Count: ${count}`);
 	console.log(`Current banner should be ${config[currentBanner].name}`);
-
+	// updateBanner(currentBanner);
 	updateHandler(millsTillChange);
 }
