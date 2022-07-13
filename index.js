@@ -188,10 +188,34 @@ async function main() {
 		copyDir: true,
 	});
 
+	var toggle = true;
+
 	systray.onClick((action) => {
 		if (action.seq_id === 0) {
 			try {
-				CW.showConsole();
+				if (toggle) {
+					CW.showConsole();
+					systray.sendAction({
+						type: 'update-item',
+						item: {
+							...action.item,
+							title: 'Hide Console',
+							seq_id: action.seq_id,
+						},
+					});
+					toggle = !toggle;
+				} else {
+					CW.hideConsole();
+					systray.sendAction({
+						type: 'update-item',
+						item: {
+							...action.item,
+							title: 'Show Console',
+							seq_id: action.seq_id,
+						},
+					});
+					toggle = !toggle;
+				}
 			} catch (e) {
 				console.log(`Can't show console.`);
 			}
