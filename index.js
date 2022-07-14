@@ -3,23 +3,9 @@ const fs = require('fs');
 
 const login = 'the_devero';
 
-const config = {
-	1: {
-		time: '6',
-		file: '1.png',
-		name: 'Morning',
-	},
-	2: {
-		time: '13',
-		file: '2.png',
-		name: 'Afternoon',
-	},
-	3: {
-		time: '18',
-		file: '3.png',
-		name: 'Evening',
-	},
-};
+var config;
+
+const confExists = fs.existsSync('./config.json');
 
 var count = 1;
 
@@ -118,14 +104,14 @@ async function updateBanner(index) {
 
 // 	open('http://localhost:8080');
 
-// 	// const newConfig = {};
+// const newConfig = {};
 
-// 	// rl.question('Twitch Login:', (answer) => {
-// 	// 	newConfig.login = answer;
-// 	// });
-// 	// rl.question();
+// rl.question('Twitch Login:', (answer) => {
+// 	newConfig.login = answer;
+// });
+// rl.question();
 
-// 	// fs.writeFileSync('./config.json', JSON.stringify(newConfig));
+// fs.writeFileSync('./config.json', JSON.stringify(newConfig));
 // }
 
 function getTime(index) {
@@ -188,6 +174,12 @@ async function main() {
 		copyDir: true,
 	});
 
+	if (confExists) {
+		config = require('./config');
+	} else {
+		// config = createConfig();
+	}
+
 	var toggle = true;
 
 	systray.onClick((action) => {
@@ -225,9 +217,6 @@ async function main() {
 	});
 
 	var currentBanner;
-	if (!config || config === {}) {
-		config = createConfig();
-	}
 	var millsTillChange = getTime(count);
 
 	while (millsTillChange <= 0) {
@@ -250,6 +239,8 @@ async function main() {
 
 	console.log(`Count: ${count}`);
 	console.log(`Current banner should be ${config[currentBanner].name}`);
-	// updateBanner(currentBanner);
+
+	!confExists && updateBanner(currentBanner);
+
 	updateHandler(millsTillChange);
 }
