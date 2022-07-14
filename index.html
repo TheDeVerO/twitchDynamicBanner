@@ -1,12 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
+	<body>
+		<div id="root"></div>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link href="/dist/output.css" rel="stylesheet" type="text/css" />
-		<script src="./setup.js"></script>
-	</head>
-	<body>
-		<h1 class="text-3xl font-bold underline text-blue-900">Test</h1>
+		<script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+		<script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+		<script type="text/babel">
+			function Main() {
+				const [containers, setContainers] = React.useState([]);
+
+				function Table() {
+					console.log(containers);
+					return containers;
+				}
+
+				function addField() {
+					const root = document.getElementById('root');
+					var number = document.getElementById('table-container')?.children.length;
+					number = number ? number : 1;
+
+					console.log(number);
+					var dummy = (
+						<div>
+							<span className='number'>{number}</span>
+							<input type='text' className='name' placeholder='Rule Name'></input>
+							<input type='number' className='time' placeholder='Time'></input>
+						</div>
+					);
+					setContainers([...containers, dummy]);
+				}
+
+				return (
+					<div className='table-container'>
+						<Table />
+						<button className='addButton' onClick={() => addField()}>
+							+
+						</button>
+					</div>
+				);
+			}
+			ReactDOM.render(<Main />, root);
+		</script>
 	</body>
 </html>
