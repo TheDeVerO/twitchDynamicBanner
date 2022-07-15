@@ -10,8 +10,32 @@
 		<script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
 		<script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
 		<script type="text/babel">
+			import config from './config';
 			function Main() {
 				const [containers, setContainers] = React.useState([]);
+				const configContainers = [];
+				React.useEffect(() => {
+					console.log(config);
+					// console.log(config);
+					Object.keys(config).forEach((index) => {
+						console.log(index);
+						var dummy = (
+							<div key={number}>
+								<input type='text' className='name' placeholder='Rule Name' value={config[index].name}></input>
+								<input type='number' className='time' placeholder='Time' value={config[index.time]}></input>
+								<input type='file' className='file' placeholder='File' value={config[index].file}></input>
+							</div>
+						);
+						configContainers.push(dummy);
+					});
+					setContainers(configContainers);
+				}, []);
+
+				React.useEffect(() => {
+					console.log(containers);
+				}, [containers]);
+				// const [containers, setContainers] = React.useState([...configContainers]);
+				// const [containers, setContainers] = React.useState([]);
 
 				function Table() {
 					return containers;
@@ -20,13 +44,11 @@
 				function addField() {
 					const root = document.getElementById('root');
 					const number = document.getElementById('table-container').children.length ?? 1;
-					// number = number ? number : 1;
-
 					var dummy = (
-						<div>
-							<span className='number'>{number}</span>
+						<div key={number}>
 							<input type='text' className='name' placeholder='Rule Name'></input>
 							<input type='number' className='time' placeholder='Time'></input>
+							<input type='file' className='file' placeholder='File'></input>
 						</div>
 					);
 					setContainers([...containers, dummy]);
@@ -39,14 +61,14 @@
 							<g>
 								<path
 									d='M227.8,174.1v53.7h-53.7c-9.5,0-17.2,7.7-17.2,17.2s7.7,17.2,17.2,17.2h53.7v53.7c0,9.5,7.7,17.2,17.2,17.2
-				s17.1-7.7,17.1-17.2v-53.7h53.7c9.5,0,17.2-7.7,17.2-17.2s-7.7-17.2-17.2-17.2h-53.7v-53.7c0-9.5-7.7-17.2-17.1-17.2
-				S227.8,164.6,227.8,174.1z'
+					s17.1-7.7,17.1-17.2v-53.7h53.7c9.5,0,17.2-7.7,17.2-17.2s-7.7-17.2-17.2-17.2h-53.7v-53.7c0-9.5-7.7-17.2-17.1-17.2
+					S227.8,164.6,227.8,174.1z'
 								/>
 								<path
 									d='M71.7,71.7C25.5,118,0,179.5,0,245s25.5,127,71.8,173.3C118,464.5,179.6,490,245,490s127-25.5,173.3-71.8
-				C464.5,372,490,310.4,490,245s-25.5-127-71.8-173.3C372,25.5,310.5,0,245,0C179.6,0,118,25.5,71.7,71.7z M455.7,245
-				c0,56.3-21.9,109.2-61.7,149s-92.7,61.7-149,61.7S135.8,433.8,96,394s-61.7-92.7-61.7-149S56.2,135.8,96,96s92.7-61.7,149-61.7
-				S354.2,56.2,394,96S455.7,188.7,455.7,245z'
+					C464.5,372,490,310.4,490,245s-25.5-127-71.8-173.3C372,25.5,310.5,0,245,0C179.6,0,118,25.5,71.7,71.7z M455.7,245
+					c0,56.3-21.9,109.2-61.7,149s-92.7,61.7-149,61.7S135.8,433.8,96,394s-61.7-92.7-61.7-149S56.2,135.8,96,96s92.7-61.7,149-61.7
+					S354.2,56.2,394,96S455.7,188.7,455.7,245z'
 								/>
 							</g>
 						</svg>
