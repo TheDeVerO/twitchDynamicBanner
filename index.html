@@ -2,34 +2,39 @@
 <html lang="en">
 	<body>
 		<div id="root"></div>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<!-- <link href="/dist/output.css" rel="stylesheet" type="text/css" /> -->
-		<link href="./index.css" rel="stylesheet" type="text/css" />
+		<!-- <link href="/index.css" rel="stylesheet" type="text/css" /> -->
+		<meta charset="UTF-8" />
 		<script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
 		<script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
 		<script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 		<script type="text/babel">
-			import config from './config';
 			function Main() {
 				const [containers, setContainers] = React.useState([]);
+				const [config, setConfig] = React.useState({});
 				const configContainers = [];
+
 				React.useEffect(() => {
-					console.log(config);
-					// console.log(config);
+					fetch(`http://localhost:8080/config.json`)
+						.then((res) => res.json())
+						.then((json) => setConfig(json));
+
 					Object.keys(config).forEach((index) => {
 						console.log(index);
 						var dummy = (
-							<div key={number}>
-								<input type='text' className='name' placeholder='Rule Name' value={config[index].name}></input>
-								<input type='number' className='time' placeholder='Time' value={config[index.time]}></input>
-								<input type='file' className='file' placeholder='File' value={config[index].file}></input>
+							<div key={index}>
+								<input type='text' className='name' placeholder='Rule Name' defaultValue={config[index].name}></input>
+								<input type='number' className='time' placeholder='Time' defaultValue={config[index.time]}></input>
+								<input type='file' className='file' placeholder='File' defaultValue={config[index].file}></input>
 							</div>
 						);
 						configContainers.push(dummy);
 					});
+					console.log(configContainers);
 					setContainers(configContainers);
-				}, []);
+				}, [config]);
 
 				React.useEffect(() => {
 					console.log(containers);
