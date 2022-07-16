@@ -85,34 +85,41 @@ async function updateBanner(index) {
 	browser.close();
 }
 
-// async function createConfig() {
-// 	const http = require('http');
-// 	const fs = require('fs');
-// 	const open = require('open');
+async function createConfig() {
+	const http = require('http');
+	const fs = require('fs');
+	const open = require('open');
 
-// 	const PORT = 8080;
+	const PORT = 8080;
 
-// 	fs.readFile('./index.html', function (err, html) {
-// 		if (err) throw err;
+	fs.readFile('./index.html', function (err, html) {
+		if (err) throw err;
 
-// 		http.createServer(function (request, response) {
-// 			response.writeHeader(200, { 'Content-Type': 'text/html' });
-// 			response.write(html);
-// 			response.end();
-// 		}).listen(PORT);
-// 	});
+		http.createServer(function (req, res) {
+			if (req.url === '/') {
+				res.writeHeader(200, { 'Content-Type': 'text/html' });
+				res.write(html);
+				res.end();
+			} else if (req.url === '/config') {
+				if (req.method === 'GET') {
+					res.write(config);
+					req.end();
+				}
+			}
+		}).listen(PORT);
+	});
 
-// 	open('http://localhost:8080');
+	open('http://localhost:8080');
 
-// const newConfig = {};
+	const newConfig = {};
 
-// rl.question('Twitch Login:', (answer) => {
-// 	newConfig.login = answer;
-// });
-// rl.question();
+	rl.question('Twitch Login:', (answer) => {
+		newConfig.login = answer;
+	});
+	rl.question();
 
-// fs.writeFileSync('./config.json', JSON.stringify(newConfig));
-// }
+	fs.writeFileSync('./config.json', JSON.stringify(newConfig));
+}
 
 function getTime(index) {
 	var now = new Date();
