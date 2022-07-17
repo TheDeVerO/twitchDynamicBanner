@@ -20,30 +20,25 @@
 					fetch(`http://localhost:8080/config.json`)
 						.then((res) => res.json())
 						.then((json) => setConfig(json));
+				}, []);
 
+				React.useEffect(() => {
 					Object.keys(config).forEach((index) => {
-						console.log(index);
 						var dummy = (
 							<div key={index}>
-								<input type='text' className='name' placeholder='Rule Name' defaultValue={config[index].name}></input>
-								<input type='number' className='time' placeholder='Time' defaultValue={config[index.time]}></input>
-								<input type='file' className='file' placeholder='File' defaultValue={config[index].file}></input>
+								<input type='text' className='name' placeholder={config[index].name}></input>
+								<input type='number' className='time' placeholder={config[index].time}></input>
+								<input type='file' className='file' placeholder={config[index].file}></input>
 							</div>
 						);
 						configContainers.push(dummy);
 					});
-					console.log(configContainers);
 					setContainers(configContainers);
 				}, [config]);
 
-				React.useEffect(() => {
-					console.log(containers);
-				}, [containers]);
-				// const [containers, setContainers] = React.useState([...configContainers]);
-				// const [containers, setContainers] = React.useState([]);
-
 				function Table() {
-					return containers;
+					if (Object.keys(config).length === 0) return 'Loading...';
+					return configContainers;
 				}
 
 				function addField() {
@@ -62,6 +57,7 @@
 				return (
 					<div id='table-container'>
 						<Table />
+						{console.log('went past table')}
 						<svg className='plus-button' onClick={() => addField()} viewBox='0 0 490 490'>
 							<g>
 								<path
