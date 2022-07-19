@@ -18,22 +18,22 @@ fs.readFile('./index.html', function (err, html) {
 		} else if (req.url === '/config.json') {
 			console.log(`it's a config file`);
 			if (req.method === 'GET') {
-				// fs.readFile(__dirname + '/config1.json', (err, data) => {
-				// 	if (err) {
-				// 		console.error(err);
-				// 	}
-				// 	res.writeHead(200, { 'Content-Type': 'application/json' });
-				// 	res.write(data);
-				// 	// res.end(data);
-				// 	res.end();
-				// });
-
 				const readStream = fs.createReadStream(__dirname + '/config1.json');
 				res.writeHead(200, { 'Content-Type': 'application/json' });
 				readStream.pipe(res);
+			} else if (req.method === 'POST') {
+				const entry = {};
+				// console.log(req.body);
+				// entry.time = req.body.time
 
-				// res.write(JSON.stringify(config));
-				// res.end();
+				let data = '';
+				req.on('data', (chunk) => {
+					data += chunk;
+				});
+				req.on('end', () => {
+					console.log(JSON.parse(data));
+					res.end();
+				});
 			}
 		}
 	}).listen(PORT, () => {
