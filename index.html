@@ -14,7 +14,6 @@
 			function Main() {
 				const [containers, setContainers] = React.useState([]);
 				const [config, setConfig] = React.useState({});
-				const configContainers = [];
 
 				React.useEffect(() => {
 					fetch(`http://localhost:8080/config.json`)
@@ -23,22 +22,55 @@
 				}, []);
 
 				React.useEffect(() => {
+					const configContainers = [];
 					Object.keys(config).forEach((index) => {
+						// var dummy = (
+						// 	<div key={index}>
+						// 		<input type='text' className='name' placeholder={config[index].name}></input>
+						// 		<input type='number' className='time' placeholder={config[index].time}></input>
+						// 		<input type='file' className='file' placeholder={config[index].file}></input>
+						// 	</div>
+						// );
+
 						var dummy = (
-							<div key={index}>
-								<input type='text' className='name' placeholder={config[index].name}></input>
-								<input type='number' className='time' placeholder={config[index].time}></input>
-								<input type='file' className='file' placeholder={config[index].file}></input>
+							<div key={index} index={index}>
+								<input type='text' id='name' placeholder='Name' onChange={handleChange} defaultValue={config[index].name}></input>
+								<input
+									type='number'
+									className='time'
+									placeholder='Time'
+									onChange={handleChange}
+									defaultValue={config[index].time}></input>
+								<input type='file' className='file' placeholder='File'></input>
 							</div>
 						);
+
 						configContainers.push(dummy);
 					});
 					setContainers(configContainers);
 				}, [config]);
 
+				// function handleChange(index, valueName) {
+				// 	const newConfig = config;
+				// 	newConfig[index][valueName] = event.
+				// }
+				function handleChange(event) {
+					console.log(event.target.attributes);
+					const newConfig = config;
+
+					console.log(newConfig);
+
+					const index = event.target.parentElement.attributes.index.value;
+					const prop = event.target.attributes.class.value;
+
+					newConfig[index][prop] = event.target.value;
+					console.log(newConfig);
+				}
+
 				function Table() {
 					if (Object.keys(config).length === 0) return 'Loading...';
-					return configContainers;
+					console.log(containers);
+					return containers;
 				}
 
 				function addField() {
