@@ -34,13 +34,19 @@
 
 						var dummy = (
 							<div key={index} index={index}>
-								<input type='text' id='name' placeholder='Name' onChange={handleChange} defaultValue={config[index].name}></input>
+								<input
+									type='text'
+									className='name'
+									placeholder='Name'
+									onChange={handleChange}
+									defaultValue={config[index].name}></input>
 								<input
 									type='number'
 									className='time'
 									placeholder='Time'
 									onChange={handleChange}
 									defaultValue={config[index].time}></input>
+
 								<input type='file' className='file' placeholder='File'></input>
 							</div>
 						);
@@ -58,13 +64,15 @@
 					console.log(event.target.attributes);
 					const newConfig = config;
 
-					console.log(newConfig);
-
 					const index = event.target.parentElement.attributes.index.value;
 					const prop = event.target.attributes.class.value;
 
 					newConfig[index][prop] = event.target.value;
-					console.log(newConfig);
+					setConfig(newConfig);
+				}
+
+				function handleSubmit() {
+					fetch('http://localhost:8080/config.json', { method: 'POST', body: JSON.stringify(config) });
 				}
 
 				function Table() {
@@ -89,6 +97,9 @@
 				return (
 					<div id='table-container'>
 						<Table />
+						<button type='submit' onClick={handleSubmit}>
+							Save
+						</button>
 						{console.log('went past table')}
 						<svg className='plus-button' onClick={() => addField()} viewBox='0 0 490 490'>
 							<g>
