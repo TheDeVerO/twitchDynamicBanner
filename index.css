@@ -9,6 +9,11 @@
 	}
 }
 
+.file {
+	/* visibility: hidden; */
+	display: none;
+}
+
 .plus-button {
 	cursor: pointer;
 	/* margin: 2em; */
