@@ -37,7 +37,7 @@
 							<div key={index} index={index}>
 								<input
 									type='text'
-									className='name'
+									className='name gradient'
 									placeholder='Name'
 									onChange={handleChange}
 									defaultValue={config[index].name}></input>
@@ -122,16 +122,15 @@
 				return (
 					<div id='table-container'>
 						<Table />
-						{console.log('went past table')}
+						<button
+							className='gradient'
+							onClick={() => {
+								fetch('/getfiles');
+							}}>
+							Test
+						</button>
 						<div>
 							<svg className='plus-button' onClick={() => addField()} viewBox='0 0 490 490'>
-								<defs>
-									<linearGradient id='linear' x1='0%' y1='0%' x2='100%' y2='0%'>
-										<stop offset='0%' stop-color='#05a' />
-
-										<stop offset='100%' stop-color='#0a5' />
-									</linearGradient>
-								</defs>
 								<g>
 									<path
 										d='M227.8,174.1v53.7h-53.7c-9.5,0-17.2,7.7-17.2,17.2s7.7,17.2,17.2,17.2h53.7v53.7c0,9.5,7.7,17.2,17.2,17.2
