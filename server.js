@@ -1,6 +1,5 @@
 const http = require('http');
 const fs = require('fs');
-const formidable = require('formidable');
 const open = require('open');
 const config = require('./config1');
 
@@ -38,30 +37,21 @@ fs.readFile('./index.html', function (err, html) {
 			const readStream = fs.createReadStream(__dirname + '/index.css');
 			res.writeHead(200, { 'Content-Type': 'text/css' });
 			readStream.pipe(res);
-		} else if (req.url === '/fileUpload') {
-			console.log('fileupload');
-			// const form = new formidable.IncomingForm();
-			// form.parse(req, (err, fields, files) => {
-			// 	console.log(files);
-			// });
-			// console.log(req.files);
-			let data = '';
-			// req.on('data', (chunk) => {
-			// 	console.log(chunk);
-			// 	data += chunk;
-			// });
-			req.on('file', file => {
-				
-			})
-			req.on('end', () => {
-				fs.writeFileSync(__dirname + `/images/2.png`, JSON.parse(data).file);
+		} else if (req.url === '/getfiles') {
+			fs.readdir(__dirname + '/images', (err, list) => {
+				err ?? console.log(err);
+				console.log(list);
+				const json = {};
+				list.forEach((file) => {
+					console.log(file);
+					Object.keys(config).forEach((key) => {
+						if (config[key].file === file) json[file] = key;
+					});
+				});
+				res.writeHead(200, { 'Content-Type': 'application/json' });
+				console.log(json);
+				res.write(JSON.stringify(json));
 			});
-			// const file = req.files.file;
-			// fs.writeFileSync(__dirname + `/images/${file.name}`);
-			// res.json({ fileName: file.name, filePath: `/images/${file.name}` });
-			// res.end();
-			// console.log(file);
-			// req.on('end', () => {});
 		}
 	}).listen(PORT, () => {
 		console.log('Server running on ' + PORT);
