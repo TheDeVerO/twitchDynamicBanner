@@ -3,11 +3,12 @@
 	<body>
 		<div id="root"></div>
 		<!-- <link href="/dist/output.css" rel="stylesheet" type="text/css" /> -->
-		<!-- <link href="/index.css" rel="stylesheet" type="text/css" /> -->
+		<link href="/index.css" rel="stylesheet" type="text/css" />
 		<meta charset="UTF-8" />
 		<script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
 		<script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
 		<script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+		<script src="https://unpkg.com/axios@0.27.2/dist/axios.js"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<script type="text/babel">
@@ -47,7 +48,7 @@
 									onChange={handleChange}
 									defaultValue={config[index].time}></input>
 
-								<input type='file' className='file' placeholder='File'></input>
+								<input type='file' className='file' name='file' onChange={handleChange} placeholder='File'></input>
 							</div>
 						);
 
@@ -60,12 +61,36 @@
 				// 	const newConfig = config;
 				// 	newConfig[index][valueName] = event.
 				// }
+
 				function handleChange(event) {
-					console.log(event.target.attributes);
 					const newConfig = config;
+					const prop = event.target.attributes.class.value;
+					console.log(prop);
+					if (prop === 'file') {
+						const formData = new FormData();
+						formData.append('file', event.target.files[0]);
+						try {
+							// fetch('/fileUpload', formData, {
+							// 	headers: {
+							// 		'Content-Type': 'multipart/form-data',
+							// 	},
+							// 	method: 'POST',
+							// });
+							// axios.post('/fileUpload', formData, {
+							// 	headers: {
+							// 		'Content-Type': 'multipart/form-data',
+							// 	},
+							// });
+							axios.post('/fileUpload', { file: event.target.files[0] });
+						} catch (err) {
+							console.log(err);
+						}
+
+						// fetch('/fileUpload', event.target.files[0], {method: 'POST'});
+						return;
+					}
 
 					const index = event.target.parentElement.attributes.index.value;
-					const prop = event.target.attributes.class.value;
 
 					newConfig[index][prop] = event.target.value;
 					setConfig(newConfig);
@@ -97,25 +122,35 @@
 				return (
 					<div id='table-container'>
 						<Table />
+						{console.log('went past table')}
+						<div>
+							<svg className='plus-button' onClick={() => addField()} viewBox='0 0 490 490'>
+								<defs>
+									<linearGradient id='linear' x1='0%' y1='0%' x2='100%' y2='0%'>
+										<stop offset='0%' stop-color='#05a' />
+
+										<stop offset='100%' stop-color='#0a5' />
+									</linearGradient>
+								</defs>
+								<g>
+									<path
+										d='M227.8,174.1v53.7h-53.7c-9.5,0-17.2,7.7-17.2,17.2s7.7,17.2,17.2,17.2h53.7v53.7c0,9.5,7.7,17.2,17.2,17.2
+									s17.1-7.7,17.1-17.2v-53.7h53.7c9.5,0,17.2-7.7,17.2-17.2s-7.7-17.2-17.2-17.2h-53.7v-53.7c0-9.5-7.7-17.2-17.1-17.2
+									S227.8,164.6,227.8,174.1z'
+									/>
+									<path
+										d='M71.7,71.7C25.5,118,0,179.5,0,245s25.5,127,71.8,173.3C118,464.5,179.6,490,245,490s127-25.5,173.3-71.8
+									C464.5,372,490,310.4,490,245s-25.5-127-71.8-173.3C372,25.5,310.5,0,245,0C179.6,0,118,25.5,71.7,71.7z M455.7,245
+									c0,56.3-21.9,109.2-61.7,149s-92.7,61.7-149,61.7S135.8,433.8,96,394s-61.7-92.7-61.7-149S56.2,135.8,96,96s92.7-61.7,149-61.7
+									S354.2,56.2,394,96S455.7,188.7,455.7,245z'
+									/>
+								</g>
+							</svg>
+						</div>
+
 						<button type='submit' onClick={handleSubmit}>
 							Save
 						</button>
-						{console.log('went past table')}
-						<svg className='plus-button' onClick={() => addField()} viewBox='0 0 490 490'>
-							<g>
-								<path
-									d='M227.8,174.1v53.7h-53.7c-9.5,0-17.2,7.7-17.2,17.2s7.7,17.2,17.2,17.2h53.7v53.7c0,9.5,7.7,17.2,17.2,17.2
-					s17.1-7.7,17.1-17.2v-53.7h53.7c9.5,0,17.2-7.7,17.2-17.2s-7.7-17.2-17.2-17.2h-53.7v-53.7c0-9.5-7.7-17.2-17.1-17.2
-					S227.8,164.6,227.8,174.1z'
-								/>
-								<path
-									d='M71.7,71.7C25.5,118,0,179.5,0,245s25.5,127,71.8,173.3C118,464.5,179.6,490,245,490s127-25.5,173.3-71.8
-					C464.5,372,490,310.4,490,245s-25.5-127-71.8-173.3C372,25.5,310.5,0,245,0C179.6,0,118,25.5,71.7,71.7z M455.7,245
-					c0,56.3-21.9,109.2-61.7,149s-92.7,61.7-149,61.7S135.8,433.8,96,394s-61.7-92.7-61.7-149S56.2,135.8,96,96s92.7-61.7,149-61.7
-					S354.2,56.2,394,96S455.7,188.7,455.7,245z'
-								/>
-							</g>
-						</svg>
 					</div>
 				);
 			}
