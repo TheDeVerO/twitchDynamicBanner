@@ -4,21 +4,22 @@
 	}
 }
 @keyframes fill {
-	100% {
-		fill: blue;
-	}
+	/* 100% {
+		fill: linear-gradient(to top, blue, purple);
+	} */
 }
 
 .file {
 	/* visibility: hidden; */
-	display: none;
+
+	/* display: none; */
 }
 
 .plus-button {
 	cursor: pointer;
-	/* margin: 2em; */
+	margin: 1em;
 
-	stroke: blue;
+	stroke: linear-gradient(to top, #4f6072, #8699aa);
 	stroke-width: 2;
 	stroke-dasharray: 810px;
 	stroke-dashoffset: 810px;
@@ -28,7 +29,7 @@
 	width: 2rem;
 	height: 2rem;
 }
-
+/* 
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
