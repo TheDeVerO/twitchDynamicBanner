@@ -106,6 +106,8 @@
 					return containers;
 				}
 
+				function Options() {}
+
 				function addField() {
 					const root = document.getElementById('root');
 					const number = document.getElementById('table-container').children.length ?? 1;
@@ -113,7 +115,9 @@
 						<div key={number}>
 							<input type='text' className='name' placeholder='Rule Name'></input>
 							<input type='number' className='time' placeholder='Time'></input>
-							<input type='file' className='file' placeholder='File'></input>
+							<select>
+								<Options />
+							</select>
 						</div>
 					);
 					setContainers([...containers, dummy]);
