@@ -15,11 +15,17 @@
 			function Main() {
 				const [containers, setContainers] = React.useState([]);
 				const [config, setConfig] = React.useState({});
+				const [files, setFiles] = React.useState({});
 
 				React.useEffect(() => {
 					fetch(`http://localhost:8080/config.json`)
 						.then((res) => res.json())
 						.then((json) => setConfig(json));
+				}, []);
+				React.useEffect(() => {
+					fetch(`/getfiles`)
+						.then((res) => res.json())
+						.then((json) => setFiles(json));
 				}, []);
 
 				React.useEffect(() => {
@@ -106,7 +112,17 @@
 					return containers;
 				}
 
-				function Options() {}
+				function Options() {
+					const options = [];
+					Object.keys(files).forEach((key) => {
+						const dummy = <option value={files[key]}>{key}</option>;
+						options.push(dummy);
+					});
+					console.log('options:');
+					console.log(options);
+					// return <select>{options}</select>;
+					return options;
+				}
 
 				function addField() {
 					const root = document.getElementById('root');
