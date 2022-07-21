@@ -39,18 +39,21 @@ fs.readFile('./index.html', function (err, html) {
 			readStream.pipe(res);
 		} else if (req.url === '/getfiles') {
 			fs.readdir(__dirname + '/images', (err, list) => {
-				err ?? console.log(err);
-				console.log(list);
+				err && console.log(err);
 				const json = {};
 				list.forEach((file) => {
-					console.log(file);
-					Object.keys(config).forEach((key) => {
-						if (config[key].file === file) json[file] = key;
+					Object.keys(config).find((key) => {
+						if (config[key].file === file) {
+							json[file] = key;
+							return true;
+						}
+						json[file] = 0;
 					});
 				});
 				res.writeHead(200, { 'Content-Type': 'application/json' });
 				console.log(json);
 				res.write(JSON.stringify(json));
+				res.end();
 			});
 		}
 	}).listen(PORT, () => {
