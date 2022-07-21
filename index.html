@@ -31,14 +31,6 @@
 				React.useEffect(() => {
 					const configContainers = [];
 					Object.keys(config).forEach((index) => {
-						// var dummy = (
-						// 	<div key={index}>
-						// 		<input type='text' className='name' placeholder={config[index].name}></input>
-						// 		<input type='number' className='time' placeholder={config[index].time}></input>
-						// 		<input type='file' className='file' placeholder={config[index].file}></input>
-						// 	</div>
-						// );
-
 						var dummy = (
 							<div key={index} index={index}>
 								<input
@@ -63,11 +55,6 @@
 					setContainers(configContainers);
 				}, [config]);
 
-				// function handleChange(index, valueName) {
-				// 	const newConfig = config;
-				// 	newConfig[index][valueName] = event.
-				// }
-
 				function handleChange(event) {
 					const newConfig = config;
 					const prop = event.target.attributes.class.value;
@@ -76,23 +63,10 @@
 						const formData = new FormData();
 						formData.append('file', event.target.files[0]);
 						try {
-							// fetch('/fileUpload', formData, {
-							// 	headers: {
-							// 		'Content-Type': 'multipart/form-data',
-							// 	},
-							// 	method: 'POST',
-							// });
-							// axios.post('/fileUpload', formData, {
-							// 	headers: {
-							// 		'Content-Type': 'multipart/form-data',
-							// 	},
-							// });
 							axios.post('/fileUpload', { file: event.target.files[0] });
 						} catch (err) {
 							console.log(err);
 						}
-
-						// fetch('/fileUpload', event.target.files[0], {method: 'POST'});
 						return;
 					}
 
@@ -118,9 +92,6 @@
 						const dummy = <option value={files[key]}>{key}</option>;
 						options.push(dummy);
 					});
-					console.log('options:');
-					console.log(options);
-					// return <select>{options}</select>;
 					return options;
 				}
 
