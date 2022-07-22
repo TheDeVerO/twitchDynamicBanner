@@ -16,9 +16,10 @@
 				const [containers, setContainers] = React.useState([]);
 				const [config, setConfig] = React.useState({});
 				const [files, setFiles] = React.useState({});
+				const [options, setOptions] = React.useState([]);
 
 				React.useEffect(() => {
-					fetch(`http://localhost:8080/config.json`)
+					fetch(`/config.json`)
 						.then((res) => res.json())
 						.then((json) => setConfig(json));
 				}, []);
@@ -27,6 +28,17 @@
 						.then((res) => res.json())
 						.then((json) => setFiles(json));
 				}, []);
+
+				React.useEffect(() => {
+					console.log('Updating options...');
+					const opts = [];
+					Object.keys(files).forEach((key) => {
+						const dummy = <option value={files[key]}>{key}</option>;
+						opts.push(dummy);
+					});
+					setOptions(opts);
+					console.log('Options Set.');
+				}, [files]);
 
 				React.useEffect(() => {
 					const configContainers = [];
@@ -45,44 +57,82 @@
 									placeholder='Time'
 									onChange={handleChange}
 									defaultValue={config[index].time}></input>
-
-								<input type='file' className='file' name='file' onChange={handleChange} placeholder='File'></input>
+								<Test />
 							</div>
 						);
-
 						configContainers.push(dummy);
 					});
 					setContainers(configContainers);
 				}, [config]);
 
+				function addField() {
+					const root = document.getElementById('root');
+					const number = document.getElementById('table-container').children.length ?? 1;
+					var dummy = (
+						<div key={number}>
+							<input type='text' className='name gradient' placeholder='Name' onChange={handleChange}></input>
+							<input type='number' className='time' placeholder='Time' onChange={handleChange}></input>
+							<select onClick={handleUpdate}>
+								<option value={0}>Choose a file</option>
+								<Test />
+							</select>
+						</div>
+					);
+					setContainers([...containers, dummy]);
+				}
+
 				function handleChange(event) {
 					const newConfig = config;
 					const prop = event.target.attributes.class.value;
-					console.log(prop);
+
 					if (prop === 'file') {
 						const formData = new FormData();
 						formData.append('file', event.target.files[0]);
+
 						try {
 							axios.post('/fileUpload', { file: event.target.files[0] });
 						} catch (err) {
 							console.log(err);
 						}
+
 						return;
 					}
-
 					const index = event.target.parentElement.attributes.index.value;
-
 					newConfig[index][prop] = event.target.value;
 					setConfig(newConfig);
 				}
 
+				function Test() {
+					return (
+						<select onClick={handleUpdate}>
+							<option value='0'>Choose a file</option>
+							{options}
+						</select>
+					);
+				}
+
 				function handleSubmit() {
-					fetch('http://localhost:8080/config.json', { method: 'POST', body: JSON.stringify(config) });
+					fetch('/config.json', { method: 'POST', body: JSON.stringify(config) });
+				}
+
+				function handleUpdate() {
+					console.log('Updating...');
+					fetch(`/getfiles`)
+						.then((res) => res.json())
+						.then((json) => {
+							console.log('Checking...');
+							console.log(JSON.stringify(files) === JSON.stringify(json));
+							if (!(JSON.stringify(files) === JSON.stringify(json))) {
+								console.log('Set.');
+								console.log(files);
+								setFiles(json);
+								console.log(files);
+							}
+						});
 				}
 
 				function Table() {
 					if (Object.keys(config).length === 0) return 'Loading...';
-					console.log(containers);
 					return containers;
 				}
 
@@ -93,21 +143,6 @@
 						options.push(dummy);
 					});
 					return options;
-				}
-
-				function addField() {
-					const root = document.getElementById('root');
-					const number = document.getElementById('table-container').children.length ?? 1;
-					var dummy = (
-						<div key={number}>
-							<input type='text' className='name' placeholder='Rule Name'></input>
-							<input type='number' className='time' placeholder='Time'></input>
-							<select>
-								<Options />
-							</select>
-						</div>
-					);
-					setContainers([...containers, dummy]);
 				}
 
 				return (
