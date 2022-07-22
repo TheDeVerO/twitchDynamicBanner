@@ -47,7 +47,7 @@ fs.readFile('./index.html', function (err, html) {
 							json[file] = key;
 							return true;
 						}
-						json[file] = 0;
+						json[file] = '0';
 					});
 				});
 				res.writeHead(200, { 'Content-Type': 'application/json' });
