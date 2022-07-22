@@ -38,6 +38,7 @@
 					});
 					setOptions(opts);
 					console.log('Options Set.');
+					console.log(options);
 				}, [files]);
 
 				React.useEffect(() => {
@@ -57,7 +58,9 @@
 									placeholder='Time'
 									onChange={handleChange}
 									defaultValue={config[index].time}></input>
-								<Test />
+								<select onClick={handleUpdate}>
+									<Options />
+								</select>
 							</div>
 						);
 						configContainers.push(dummy);
@@ -74,7 +77,7 @@
 							<input type='number' className='time' placeholder='Time' onChange={handleChange}></input>
 							<select onClick={handleUpdate}>
 								<option value={0}>Choose a file</option>
-								<Test />
+								<Options />
 							</select>
 						</div>
 					);
@@ -102,15 +105,6 @@
 					setConfig(newConfig);
 				}
 
-				function Test() {
-					return (
-						<select onClick={handleUpdate}>
-							<option value='0'>Choose a file</option>
-							{options}
-						</select>
-					);
-				}
-
 				function handleSubmit() {
 					fetch('/config.json', { method: 'POST', body: JSON.stringify(config) });
 				}
@@ -120,13 +114,11 @@
 					fetch(`/getfiles`)
 						.then((res) => res.json())
 						.then((json) => {
-							console.log('Checking...');
+							console.log(files);
+							console.log(json);
 							console.log(JSON.stringify(files) === JSON.stringify(json));
 							if (!(JSON.stringify(files) === JSON.stringify(json))) {
-								console.log('Set.');
-								console.log(files);
 								setFiles(json);
-								console.log(files);
 							}
 						});
 				}
@@ -137,10 +129,8 @@
 				}
 
 				function Options() {
-					const options = [];
-					Object.keys(files).forEach((key) => {
-						const dummy = <option value={files[key]}>{key}</option>;
-						options.push(dummy);
+					const options = Object.keys(files).map((key) => {
+						return <option value={files[key]}>{key}</option>;
 					});
 					return options;
 				}
