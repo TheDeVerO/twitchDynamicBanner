@@ -68,6 +68,7 @@
 									<Options />
 								</select>
 								<select onClick={handleUpdate}>{options}</select>
+								<Options />
 							</div>
 						);
 					});
@@ -89,6 +90,7 @@
 								<option value={0}>Choose a file</option>
 								<Options />
 							</select>
+							<Options />
 						</div>
 					);
 					setContainers([...containers, dummy]);
@@ -138,7 +140,15 @@
 							</option>
 						);
 					});
-					return options;
+
+					const test = (
+						<select onClick={handleUpdate}>
+							<option value={0}>Choose a file</option>
+							{options}
+						</select>
+					);
+
+					return test;
 				}
 
 				return (
