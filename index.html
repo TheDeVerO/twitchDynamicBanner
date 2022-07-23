@@ -17,6 +17,7 @@
 				const [config, setConfig] = React.useState({});
 				const [files, setFiles] = React.useState({});
 				const [options, setOptions] = React.useState([]);
+				const [newConfig, setNewConfig] = React.useState({});
 
 				React.useEffect(() => {
 					fetch(`/config.json`)
@@ -31,20 +32,25 @@
 
 				React.useEffect(() => {
 					console.log('Updating options...');
-					const opts = [];
-					Object.keys(files).forEach((key) => {
-						const dummy = <option value={files[key]}>{key}</option>;
-						opts.push(dummy);
+					// const opts = [];
+					// Object.keys(files).forEach((key) => {
+					// 	const dummy = <option value={files[key]}>{key}</option>;
+					// 	opts.push(dummy);
+					// });
+					// setOptions(opts);
+					// console.log('Options Set.');
+					// console.log(options);
+
+					const options = Object.keys(files).map((key) => {
+						return <option value={files[key]}>{key}</option>;
 					});
-					setOptions(opts);
-					console.log('Options Set.');
-					console.log(options);
+					setOptions(options);
 				}, [files]);
 
 				React.useEffect(() => {
-					const configContainers = [];
-					Object.keys(config).forEach((index) => {
-						var dummy = (
+					console.log('Main UseEffect called.');
+					const configContainers = Object.keys(config).map((index) => {
+						return (
 							<div key={index} index={index}>
 								<input
 									type='text'
@@ -61,11 +67,16 @@
 								<select onClick={handleUpdate}>
 									<Options />
 								</select>
+								<select onClick={handleUpdate}>{options}</select>
+								<Options />
 							</div>
 						);
-						configContainers.push(dummy);
 					});
 					setContainers(configContainers);
+				}, [config]);
+
+				React.useEffect(() => {
+					setNewConfig(config);
 				}, [config]);
 
 				function addField() {
@@ -79,30 +90,21 @@
 								<option value={0}>Choose a file</option>
 								<Options />
 							</select>
+							<Options />
 						</div>
 					);
 					setContainers([...containers, dummy]);
 				}
 
 				function handleChange(event) {
+					console.log('HandleChange called.');
 					const newConfig = config;
 					const prop = event.target.attributes.class.value;
-
-					if (prop === 'file') {
-						const formData = new FormData();
-						formData.append('file', event.target.files[0]);
-
-						try {
-							axios.post('/fileUpload', { file: event.target.files[0] });
-						} catch (err) {
-							console.log(err);
-						}
-
-						return;
-					}
 					const index = event.target.parentElement.attributes.index.value;
+
 					newConfig[index][prop] = event.target.value;
-					setConfig(newConfig);
+
+					// setConfig(newConfig);
 				}
 
 				function handleSubmit() {
@@ -124,20 +126,35 @@
 				}
 
 				function Table() {
+					console.log('Table called.');
 					if (Object.keys(config).length === 0) return 'Loading...';
 					return containers;
 				}
 
 				function Options() {
-					const options = Object.keys(files).map((key) => {
-						return <option value={files[key]}>{key}</option>;
+					console.log('Options called.');
+					const opts = Object.keys(files).map((key) => {
+						return (
+							<option key='key' value={files[key]}>
+								{key}
+							</option>
+						);
 					});
-					return options;
+
+					const test = (
+						<select onClick={handleUpdate}>
+							<option value={0}>Choose a file</option>
+							{options}
+						</select>
+					);
+
+					return test;
 				}
 
 				return (
 					<div id='table-container'>
 						<Table />
+						<Options />
 						<button
 							className='gradient'
 							onClick={() => {
