@@ -47,37 +47,6 @@
 					setOptions(options);
 				}, [files]);
 
-				React.useEffect(() => {
-					console.log('Main UseEffect called.');
-					const configContainers = Object.keys(config).map((index) => {
-						return (
-							<div key={index} index={index}>
-								<input
-									type='text'
-									className='name gradient'
-									placeholder='Name'
-									onChange={handleChange}
-									defaultValue={config[index].name}></input>
-								<input
-									type='number'
-									className='time'
-									placeholder='Time'
-									onChange={handleChange}
-									defaultValue={config[index].time}></input>
-								<select onClick={handleUpdate}>
-									<option value={0}>Choose a file</option>
-									{options}
-								</select>
-							</div>
-						);
-					});
-					setContainers(configContainers);
-				}, [config]);
-
-				React.useEffect(() => {
-					setNewConfig(config);
-				}, [config]);
-
 				function addField() {
 					const root = document.getElementById('root');
 					const number = document.getElementById('table-container').children.length ?? 1;
@@ -124,6 +93,32 @@
 						});
 				}
 
+				function Main() {
+					const configContainers = Object.keys(config).map((index) => {
+						return (
+							<div key={index} index={index}>
+								<input
+									type='text'
+									className='name gradient'
+									placeholder='Name'
+									onChange={handleChange}
+									defaultValue={config[index].name}></input>
+								<input
+									type='number'
+									className='time'
+									placeholder='Time'
+									onChange={handleChange}
+									defaultValue={config[index].time}></input>
+								<select onClick={handleUpdate}>
+									<option value={0}>Choose a file</option>
+									{options}
+								</select>
+							</div>
+						);
+					});
+					return configContainers;
+				}
+
 				function Table() {
 					console.log('Table called.');
 					if (Object.keys(config).length === 0) return 'Loading...';
@@ -152,7 +147,7 @@
 
 				return (
 					<div id='table-container'>
-						<Table />
+						<Main />
 						<Options />
 						<button
 							className='gradient'
