@@ -65,10 +65,9 @@
 									onChange={handleChange}
 									defaultValue={config[index].time}></input>
 								<select onClick={handleUpdate}>
-									<Options />
+									<option value={0}>Choose a file</option>
+									{options}
 								</select>
-								<select onClick={handleUpdate}>{options}</select>
-								<Options />
 							</div>
 						);
 					});
