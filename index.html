@@ -31,37 +31,72 @@
 				}, []);
 
 				React.useEffect(() => {
-					console.log('Updating options...');
-					// const opts = [];
-					// Object.keys(files).forEach((key) => {
-					// 	const dummy = <option value={files[key]}>{key}</option>;
-					// 	opts.push(dummy);
+					// Table();
+					// const pog = Object.keys(config).map((key, index) => {
+					// 	// addField(config[key]?.name, config[key]?.time, config[key]?.file);
+					// 	addField();
+					// 	console.log(containers);
 					// });
-					// setOptions(opts);
-					// console.log('Options Set.');
-					// console.log(options);
+					// if (Object.keys(config).length > 0) {
+					// 	addField();
+					// 	addField();
+					// 	addField();
+					// }
+				}, [config]);
 
+				React.useEffect(() => {
+					console.log('Updating options...');
 					const options = Object.keys(files).map((key) => {
 						return <option value={files[key]}>{key}</option>;
 					});
 					setOptions(options);
 				}, [files]);
 
+				// function addField(name = false, time = false, file = 0) {
 				function addField() {
-					const root = document.getElementById('root');
-					const number = document.getElementById('table-container').children.length ?? 1;
+					const table = document.getElementById('table-container');
+					const index = table.children.length ?? 1;
 					var dummy = (
-						<div key={number}>
+						<div key={index} index={index}>
 							<input type='text' className='name gradient' placeholder='Name' onChange={handleChange}></input>
 							<input type='number' className='time' placeholder='Time' onChange={handleChange}></input>
-							<select onClick={handleUpdate}>
+							<select defaultValue={config[index]?.file && index} onClick={handleUpdate}>
 								<option value={0}>Choose a file</option>
-								<Options />
+								{options}
 							</select>
-							<Options />
 						</div>
 					);
-					setContainers([...containers, dummy]);
+
+					const pog = (
+						<div key={index} index={index}>
+							<input
+								type='text'
+								className='name gradient'
+								placeholder='Name'
+								onChange={handleChange}
+								defaultValue={config[index].name}></input>
+							<input
+								type='number'
+								className='time'
+								placeholder='Time'
+								onChange={handleChange}
+								defaultValue={config[index].time}></input>
+							<select defaultValue={config[index]?.file && index} onClick={handleUpdate}>
+								<option value={0}>Choose a file</option>
+								{options}
+							</select>
+							{Object.keys(files).map((file) => {
+								return file;
+							})}
+						</div>
+					);
+
+					// table.appendChild(dummy);
+
+					setContainers([...containers, pog]);
+					console.log(pog);
+					console.log(containers);
+					console.log('setContainers');
 				}
 
 				function handleChange(event) {
@@ -84,16 +119,16 @@
 					fetch(`/getfiles`)
 						.then((res) => res.json())
 						.then((json) => {
-							console.log(files);
-							console.log(json);
 							console.log(JSON.stringify(files) === JSON.stringify(json));
 							if (!(JSON.stringify(files) === JSON.stringify(json))) {
 								setFiles(json);
 							}
 						});
+					// Table();
 				}
 
-				function Main() {
+				function Table() {
+					console.log('table called');
 					const configContainers = Object.keys(config).map((index) => {
 						return (
 							<div key={index} index={index}>
@@ -109,71 +144,78 @@
 									placeholder='Time'
 									onChange={handleChange}
 									defaultValue={config[index].time}></input>
-								<select onClick={handleUpdate}>
+								<select defaultValue={config[index]?.file && index} onClick={handleUpdate}>
 									<option value={0}>Choose a file</option>
 									{options}
 								</select>
+								{Object.keys(files).map((file) => {
+									return file;
+								})}
 							</div>
 						);
 					});
-					return configContainers;
+					setContainers(configContainers);
 				}
 
-				function Table() {
-					console.log('Table called.');
-					if (Object.keys(config).length === 0) return 'Loading...';
-					return containers;
-				}
-
-				function Options() {
-					console.log('Options called.');
-					const opts = Object.keys(files).map((key) => {
+				function Test() {
+					if (Object.keys(config).length < 0) return;
+					return Object.keys(config).map((index) => {
 						return (
-							<option key='key' value={files[key]}>
-								{key}
-							</option>
+							<div key={index} index={index}>
+								<input
+									type='text'
+									className='name gradient'
+									placeholder='Name'
+									onChange={handleChange}
+									defaultValue={config[index]?.name}></input>
+								<input
+									type='number'
+									className='time'
+									placeholder='Time'
+									onChange={handleChange}
+									defaultValue={config[index]?.time}></input>
+								<select defaultValue={config[index]?.file && index} onClick={handleUpdate}>
+									<option value={0}>Choose a file</option>
+									{options}
+								</select>
+								{Object.keys(files).map((file) => {
+									return file;
+								})}
+							</div>
 						);
 					});
+				}
 
-					const test = (
-						<select onClick={handleUpdate}>
-							<option value={0}>Choose a file</option>
-							{options}
-						</select>
-					);
-
-					return test;
+				function handleTest() {
+					const temp = { ...config, [Object.keys(config).length + 1]: {} };
+					temp[Object.keys(config).length + 1] = {};
+					setConfig(temp);
 				}
 
 				return (
-					<div id='table-container'>
-						<Main />
-						<Options />
-						<button
-							className='gradient'
-							onClick={() => {
-								fetch('/getfiles');
-							}}>
-							Test
-						</button>
-						<div>
-							<svg className='plus-button' onClick={() => addField()} viewBox='0 0 490 490'>
-								<g>
-									<path
-										d='M227.8,174.1v53.7h-53.7c-9.5,0-17.2,7.7-17.2,17.2s7.7,17.2,17.2,17.2h53.7v53.7c0,9.5,7.7,17.2,17.2,17.2
-									s17.1-7.7,17.1-17.2v-53.7h53.7c9.5,0,17.2-7.7,17.2-17.2s-7.7-17.2-17.2-17.2h-53.7v-53.7c0-9.5-7.7-17.2-17.1-17.2
-									S227.8,164.6,227.8,174.1z'
-									/>
-									<path
-										d='M71.7,71.7C25.5,118,0,179.5,0,245s25.5,127,71.8,173.3C118,464.5,179.6,490,245,490s127-25.5,173.3-71.8
-									C464.5,372,490,310.4,490,245s-25.5-127-71.8-173.3C372,25.5,310.5,0,245,0C179.6,0,118,25.5,71.7,71.7z M455.7,245
-									c0,56.3-21.9,109.2-61.7,149s-92.7,61.7-149,61.7S135.8,433.8,96,394s-61.7-92.7-61.7-149S56.2,135.8,96,96s92.7-61.7,149-61.7
-									S354.2,56.2,394,96S455.7,188.7,455.7,245z'
-									/>
-								</g>
-							</svg>
+					<div>
+						<div id='table-container'>
+							{containers}
+							<Test />
+							<div>
+								<svg className='plus-button' onClick={() => addField()} viewBox='0 0 490 490'>
+									<g>
+										<path
+											d='M227.8,174.1v53.7h-53.7c-9.5,0-17.2,7.7-17.2,17.2s7.7,17.2,17.2,17.2h53.7v53.7c0,9.5,7.7,17.2,17.2,17.2
+												s17.1-7.7,17.1-17.2v-53.7h53.7c9.5,0,17.2-7.7,17.2-17.2s-7.7-17.2-17.2-17.2h-53.7v-53.7c0-9.5-7.7-17.2-17.1-17.2
+												S227.8,164.6,227.8,174.1z'
+										/>
+										<path
+											d='M71.7,71.7C25.5,118,0,179.5,0,245s25.5,127,71.8,173.3C118,464.5,179.6,490,245,490s127-25.5,173.3-71.8
+												C464.5,372,490,310.4,490,245s-25.5-127-71.8-173.3C372,25.5,310.5,0,245,0C179.6,0,118,25.5,71.7,71.7z M455.7,245
+												c0,56.3-21.9,109.2-61.7,149s-92.7,61.7-149,61.7S135.8,433.8,96,394s-61.7-92.7-61.7-149S56.2,135.8,96,96s92.7-61.7,149-61.7
+												S354.2,56.2,394,96S455.7,188.7,455.7,245z'
+										/>
+									</g>
+								</svg>
+							</div>
+							<button onClick={handleTest}>Test</button>
 						</div>
-
 						<button type='submit' onClick={handleSubmit}>
 							Save
 						</button>
