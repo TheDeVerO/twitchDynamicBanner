@@ -14,7 +14,6 @@
 				const [containers, setContainers] = React.useState([]);
 				const [config, setConfig] = React.useState({});
 				const [files, setFiles] = React.useState({});
-				const [options, setOptions] = React.useState([]);
 
 				// Initial fetch of the config.
 				React.useEffect(() => {
@@ -29,19 +28,6 @@
 						.then((res) => res.json())
 						.then((json) => setFiles(json));
 				}, []);
-
-				// Updating options state when files state is changed.
-				React.useEffect(() => {
-					// Options contain filenames from images folder and should be up to date, expecting new files.
-					const options = Object.keys(files).map((key, index) => {
-						return (
-							<option key={index} value={key}>
-								{key}
-							</option>
-						);
-					});
-					setOptions(options);
-				}, [files]);
 
 				// Fields change handler.
 				function handleChange(event) {
@@ -74,7 +60,18 @@
 						});
 				}
 
-				// Main Table function, returns the table with content from fetched config.
+				// Options component, returns an array of <option> values.
+				function Options() {
+					return Object.keys(files).map((key, index) => {
+						return (
+							<option key={index} value={key}>
+								{key}
+							</option>
+						);
+					});
+				}
+
+				// Main Table component, returns the table with content from fetched config.
 				function Table() {
 					// If config is empty - returning a starting message.
 					if (Object.keys(config).length < 1) return 'Start by pressing the + button below to add the field.';
@@ -82,23 +79,29 @@
 					// Returning an array of containers with fields.
 					return Object.keys(config).map((index) => {
 						return (
-							<div key={index} index={index}>
+							<div className='gradient' key={index} index={index}>
 								<input
 									type='text'
-									className='name gradient'
+									className='gradient'
 									variable='name'
 									placeholder='Name'
 									onChange={handleChange}
 									defaultValue={config[index]?.name}></input>
 								<input
 									type='number'
+									className='gradient'
 									variable='time'
 									placeholder='Time'
 									onChange={handleChange}
 									defaultValue={config[index]?.time}></input>
-								<select variable='file' defaultValue={config[index]?.file} onClick={handleUpdate} onChange={handleChange}>
+								<select
+									className='gradient'
+									variable='file'
+									defaultValue={config[index]?.file}
+									onClick={handleUpdate}
+									onChange={handleChange}>
 									<option value={0}>Choose a file</option>
-									{options}
+									<Options />
 								</select>
 							</div>
 						);
