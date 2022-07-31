@@ -17,7 +17,6 @@
 				const [config, setConfig] = React.useState({});
 				const [files, setFiles] = React.useState({});
 				const [options, setOptions] = React.useState([]);
-				const [newConfig, setNewConfig] = React.useState({});
 
 				React.useEffect(() => {
 					fetch(`/config.json`)
@@ -31,83 +30,24 @@
 				}, []);
 
 				React.useEffect(() => {
-					// Table();
-					// const pog = Object.keys(config).map((key, index) => {
-					// 	// addField(config[key]?.name, config[key]?.time, config[key]?.file);
-					// 	addField();
-					// 	console.log(containers);
-					// });
-					// if (Object.keys(config).length > 0) {
-					// 	addField();
-					// 	addField();
-					// 	addField();
-					// }
-				}, [config]);
-
-				React.useEffect(() => {
 					console.log('Updating options...');
 					const options = Object.keys(files).map((key) => {
-						return <option value={files[key]}>{key}</option>;
+						return <option value={key}>{key}</option>;
 					});
 					setOptions(options);
 				}, [files]);
 
-				// function addField(name = false, time = false, file = 0) {
-				function addField() {
-					const table = document.getElementById('table-container');
-					const index = table.children.length ?? 1;
-					var dummy = (
-						<div key={index} index={index}>
-							<input type='text' className='name gradient' placeholder='Name' onChange={handleChange}></input>
-							<input type='number' className='time' placeholder='Time' onChange={handleChange}></input>
-							<select defaultValue={config[index]?.file && index} onClick={handleUpdate}>
-								<option value={0}>Choose a file</option>
-								{options}
-							</select>
-						</div>
-					);
-
-					const pog = (
-						<div key={index} index={index}>
-							<input
-								type='text'
-								className='name gradient'
-								placeholder='Name'
-								onChange={handleChange}
-								defaultValue={config[index].name}></input>
-							<input
-								type='number'
-								className='time'
-								placeholder='Time'
-								onChange={handleChange}
-								defaultValue={config[index].time}></input>
-							<select defaultValue={config[index]?.file && index} onClick={handleUpdate}>
-								<option value={0}>Choose a file</option>
-								{options}
-							</select>
-							{Object.keys(files).map((file) => {
-								return file;
-							})}
-						</div>
-					);
-
-					// table.appendChild(dummy);
-
-					setContainers([...containers, pog]);
-					console.log(pog);
-					console.log(containers);
-					console.log('setContainers');
-				}
-
 				function handleChange(event) {
 					console.log('HandleChange called.');
-					const newConfig = config;
-					const prop = event.target.attributes.class.value;
+					const prop = event.target.attributes.variable.value;
 					const index = event.target.parentElement.attributes.index.value;
+
+					const newConfig = config;
 
 					newConfig[index][prop] = event.target.value;
 
-					// setConfig(newConfig);
+					setConfig(newConfig);
+					console.log(config);
 				}
 
 				function handleSubmit() {
@@ -124,37 +64,6 @@
 								setFiles(json);
 							}
 						});
-					// Table();
-				}
-
-				function Table() {
-					console.log('table called');
-					const configContainers = Object.keys(config).map((index) => {
-						return (
-							<div key={index} index={index}>
-								<input
-									type='text'
-									className='name gradient'
-									placeholder='Name'
-									onChange={handleChange}
-									defaultValue={config[index].name}></input>
-								<input
-									type='number'
-									className='time'
-									placeholder='Time'
-									onChange={handleChange}
-									defaultValue={config[index].time}></input>
-								<select defaultValue={config[index]?.file && index} onClick={handleUpdate}>
-									<option value={0}>Choose a file</option>
-									{options}
-								</select>
-								{Object.keys(files).map((file) => {
-									return file;
-								})}
-							</div>
-						);
-					});
-					setContainers(configContainers);
 				}
 
 				function Test() {
@@ -165,28 +74,26 @@
 								<input
 									type='text'
 									className='name gradient'
+									variable='name'
 									placeholder='Name'
 									onChange={handleChange}
 									defaultValue={config[index]?.name}></input>
 								<input
 									type='number'
-									className='time'
+									variable='time'
 									placeholder='Time'
 									onChange={handleChange}
 									defaultValue={config[index]?.time}></input>
-								<select defaultValue={config[index]?.file && index} onClick={handleUpdate}>
+								<select variable='file' defaultValue={config[index]?.file} onClick={handleUpdate} onChange={handleChange}>
 									<option value={0}>Choose a file</option>
 									{options}
 								</select>
-								{Object.keys(files).map((file) => {
-									return file;
-								})}
 							</div>
 						);
 					});
 				}
 
-				function handleTest() {
+				function addField() {
 					const temp = { ...config, [Object.keys(config).length + 1]: {} };
 					temp[Object.keys(config).length + 1] = {};
 					setConfig(temp);
@@ -195,7 +102,6 @@
 				return (
 					<div>
 						<div id='table-container'>
-							{containers}
 							<Test />
 							<div>
 								<svg className='plus-button' onClick={() => addField()} viewBox='0 0 490 490'>
@@ -214,7 +120,6 @@
 									</g>
 								</svg>
 							</div>
-							<button onClick={handleTest}>Test</button>
 						</div>
 						<button type='submit' onClick={handleSubmit}>
 							Save

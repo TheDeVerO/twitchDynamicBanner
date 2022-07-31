@@ -1,7 +1,6 @@
 const http = require('http');
 const fs = require('fs');
 const open = require('open');
-const config = require('./config1');
 
 const PORT = 8080;
 
@@ -19,9 +18,14 @@ fs.readFile('./index.html', function (err, html) {
 		} else if (req.url === '/config.json') {
 			console.log(`it's a config file`);
 			if (req.method === 'GET') {
-				const readStream = fs.createReadStream(__dirname + '/config1.json');
-				res.writeHead(200, { 'Content-Type': 'application/json' });
-				readStream.pipe(res);
+				if (fs.existsSync(__dirname + '/config.json')) {
+					const readStream = fs.createReadStream(__dirname + '/config.json');
+					res.writeHead(200, { 'Content-Type': 'application/json' });
+					readStream.pipe(res);
+				} else {
+					res.writeHead(200, { 'Content-Type': 'application/json' });
+					res.end(JSON.stringify({}));
+				}
 			} else if (req.method === 'POST') {
 				let data = '';
 				req.on('data', (chunk) => {
@@ -29,7 +33,7 @@ fs.readFile('./index.html', function (err, html) {
 				});
 				req.on('end', () => {
 					console.log(JSON.parse(data));
-					fs.writeFileSync(__dirname + '/config1.json', data);
+					fs.writeFileSync(__dirname + '/config.json', data);
 					res.end();
 				});
 			}
@@ -40,16 +44,24 @@ fs.readFile('./index.html', function (err, html) {
 		} else if (req.url === '/getfiles') {
 			fs.readdir(__dirname + '/images', (err, list) => {
 				err && console.log(err);
+				// let config;
+				// try {
+				// 	config = require('./config');
+				// } catch (err) {
+				// 	config = {};
+				// }
+
 				const json = {};
-				list.forEach((file) => {
-					Object.keys(config).find((key) => {
-						if (config[key].file === file) {
-							json[file] = key;
-							return true;
-						}
-						json[file] = '0';
-					});
-				});
+				list.forEach((file) => (json[file] = file));
+				// list.forEach((file) => {
+				// 	Object.keys(config).find((key) => {
+				// 		if (config[key].file === file) {
+				// 			json[file] = key;
+				// 			return true;
+				// 		}
+				// 		json[file] = '0';
+				// 	});
+				// });
 				res.writeHead(200, { 'Content-Type': 'application/json' });
 				console.log(json);
 				res.write(JSON.stringify(json));
