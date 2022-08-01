@@ -60,6 +60,21 @@
 						});
 				}
 
+				function handleSort() {
+					if (config.length < 2) return;
+
+					const newConfig = config;
+					console.log(newConfig);
+					const sortable = Object.fromEntries(
+						Object.entries(newConfig).sort(([, a], [, b]) => {
+							console.log(a.time - b.time);
+							return a.time - b.time;
+						})
+					);
+					console.log(newConfig);
+					console.log(sortable);
+				}
+
 				// Options component, returns an array of <option> values.
 				function Options() {
 					return Object.keys(files).map((key, index) => {
@@ -92,6 +107,7 @@
 									className='gradient'
 									variable='time'
 									placeholder='Time'
+									onBlur={handleSort}
 									onChange={handleChange}
 									defaultValue={config[index]?.time}></input>
 								<select
