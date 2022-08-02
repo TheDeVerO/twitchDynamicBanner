@@ -31,13 +31,15 @@
 
 				// Fields change handler.
 				function handleChange(event) {
+					return;
 					// Figuring what type of field had changed.
 					const prop = event.target.attributes.variable.value;
 					// Getting index of the changed field.
 					const index = event.target.parentElement.attributes.index.value;
 
 					// Applying changes to config
-					const newConfig = config;
+					const newConfig = [...config];
+
 					newConfig[index][prop] = event.target.value;
 					setConfig(newConfig);
 					console.log(config);
@@ -61,19 +63,30 @@
 						});
 				}
 
+				function handleBlur() {
+					// Figuring what type of field had changed.
+					const prop = event.target.attributes.variable.value;
+					// Getting index of the changed field.
+					const index = event.target.parentElement.attributes.index.value;
+
+					// Applying changes to config
+					const newConfig = [...config];
+
+					newConfig[index][prop] = event.target.value;
+					setConfig(newConfig);
+					console.log(config);
+					if (prop === 'time') {
+						handleSort();
+					}
+				}
+
+				// Sorting
 				function handleSort() {
 					if (config.length < 2) return;
+					const newConfig = [...config];
 
-					const newConfig = config;
-					console.log(newConfig);
-					const sortable = Object.fromEntries(
-						Object.entries(newConfig).sort(([, a], [, b]) => {
-							console.log(a.time - b.time);
-							return a.time - b.time;
-						})
-					);
-					console.log(newConfig);
-					console.log(sortable);
+					const sortable = newConfig.sort((a, b) => a.time - b.time);
+					setConfig(sortable);
 				}
 
 				// Options component, returns an array of <option> values.
@@ -104,6 +117,7 @@
 									className='gradient'
 									variable='name'
 									placeholder='Name'
+									onBlur={handleBlur}
 									onChange={handleChange}
 									defaultValue={entry.name}></input>
 								<input
@@ -111,10 +125,16 @@
 									className='gradient'
 									variable='time'
 									placeholder='Time'
-									onBlur={handleSort}
+									onBlur={handleBlur}
 									onChange={handleChange}
 									defaultValue={entry.time}></input>
-								<select className='gradient' variable='file' defaultValue={entry.file} onClick={handleUpdate} onChange={handleChange}>
+								<select
+									className='gradient'
+									variable='file'
+									defaultValue={entry.file}
+									onBlur={handleBlur}
+									onClick={handleUpdate}
+									onChange={handleChange}>
 									<option value={0}>Choose a file</option>
 									<Options />
 								</select>
