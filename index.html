@@ -11,9 +11,11 @@
 
 		<script type="text/babel">
 			function Main() {
+				console.log('Main called');
 				const [containers, setContainers] = React.useState([]);
-				const [config, setConfig] = React.useState();
 				const [files, setFiles] = React.useState({});
+				const [config, setConfig] = React.useState();
+				const [payload, setPayload] = React.useState(config);
 
 				// Initial fetch of the config.
 				React.useEffect(() => {
@@ -29,21 +31,33 @@
 						.then((json) => setFiles(json));
 				}, []);
 
-				// Fields change handler.
-				function handleChange(event) {
-					return;
-					// Figuring what type of field had changed.
-					const prop = event.target.attributes.variable.value;
-					// Getting index of the changed field.
-					const index = event.target.parentElement.attributes.index.value;
+				React.useEffect(() => {
+					setPayload(config);
+				}, [config]);
 
-					// Applying changes to config
-					const newConfig = [...config];
+				// // Fields change handler.
+				// function handleChange(event) {
+				// 	// return;
+				// 	// Figuring what type of field had changed.
+				// 	const prop = event.target.attributes.variable.value;
+				// 	// Getting index of the changed field.
+				// 	const index = event.target.parentElement.attributes.index.value;
 
-					newConfig[index][prop] = event.target.value;
-					setConfig(newConfig);
-					console.log(config);
-				}
+				// 	if (prop === 'time') {
+				// 		const time = event.target.value;
+				// 		if (time === '24' || time < 0) {
+				// 			event.target.value = 0;
+				// 		} else if (time > 23) {
+				// 			event.target.value = 23;
+				// 		}
+				// 	}
+
+				// 	// Applying changes to config
+				// 	const newPayload = [...payload];
+				// 	newPayload[index][prop] = event.target.value;
+				// 	// setPayload(newPayload);
+				// 	console.log(payload);
+				// }
 
 				// Save button handler, sends updated config to the server to overwrite existing.
 				function handleSubmit() {
@@ -63,27 +77,10 @@
 						});
 				}
 
-				function handleBlur() {
-					// Figuring what type of field had changed.
-					const prop = event.target.attributes.variable.value;
-					// Getting index of the changed field.
-					const index = event.target.parentElement.attributes.index.value;
-
-					// Applying changes to config
-					const newConfig = [...config];
-
-					newConfig[index][prop] = event.target.value;
-					setConfig(newConfig);
-					console.log(config);
-					if (prop === 'time') {
-						handleSort();
-					}
-				}
-
 				// Sorting
 				function handleSort() {
-					if (config.length < 2) return;
-					const newConfig = [...config];
+					if (payload.length < 2) return;
+					const newConfig = [...payload];
 
 					const sortable = newConfig.sort((a, b) => a.time - b.time);
 					setConfig(sortable);
@@ -108,6 +105,30 @@
 					// If config is empty - returning a starting message.
 					if (config?.length < 1) return 'Start by pressing + button below to add a new field.';
 
+					// Fields change handler.
+					function handleChange(event) {
+						// return;
+						// Figuring what type of field had changed.
+						const prop = event.target.attributes.variable.value;
+						// Getting index of the changed field.
+						const index = event.target.parentElement.attributes.index.value;
+
+						if (prop === 'time') {
+							const time = event.target.value;
+							if (time === '24' || time < 0) {
+								event.target.value = 0;
+							} else if (time > 23) {
+								event.target.value = 23;
+							}
+						}
+
+						// Applying changes to config
+						const newPayload = [...payload];
+						newPayload[index][prop] = event.target.value;
+						// setPayload(newPayload);
+						console.log(payload);
+					}
+
 					// Returning an array of containers with fields.
 					return config.map((entry, index) => {
 						return (
@@ -117,7 +138,6 @@
 									className='gradient'
 									variable='name'
 									placeholder='Name'
-									onBlur={handleBlur}
 									onChange={handleChange}
 									defaultValue={entry.name}></input>
 								<input
@@ -125,16 +145,10 @@
 									className='gradient'
 									variable='time'
 									placeholder='Time'
-									onBlur={handleBlur}
+									onBlur={handleSort}
 									onChange={handleChange}
 									defaultValue={entry.time}></input>
-								<select
-									className='gradient'
-									variable='file'
-									defaultValue={entry.file}
-									onBlur={handleBlur}
-									onClick={handleUpdate}
-									onChange={handleChange}>
+								<select className='gradient' variable='file' defaultValue={entry.file} onClick={handleUpdate} onChange={handleChange}>
 									<option value={0}>Choose a file</option>
 									<Options />
 								</select>
@@ -152,10 +166,23 @@
 					console.log(config);
 				}
 
+				function Test() {
+					console.log('called');
+					return <input type='number' onChange={handleTest}></input>;
+				}
+
+				function handleTest(event) {
+					// event.target.value = 'bruh';
+					if (event.target.value > 23) {
+						event.target.value = 23;
+					}
+				}
+
 				return (
 					<div>
 						<div id='table-container'>
 							<Table />
+							<Test />
 							<div>
 								<svg className='plus-button' onClick={() => addField()} viewBox='0 0 490 490'>
 									<g>
