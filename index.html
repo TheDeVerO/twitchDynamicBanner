@@ -12,7 +12,7 @@
 		<script type="text/babel">
 			function Main() {
 				const [containers, setContainers] = React.useState([]);
-				const [config, setConfig] = React.useState([]);
+				const [config, setConfig] = React.useState();
 				const [files, setFiles] = React.useState({});
 
 				// Initial fetch of the config.
@@ -125,9 +125,9 @@
 
 				// Container adding function. Adds an entry to the config.
 				function addField() {
-					const temp = config;
-					temp.push('bruh');
-					console.log(config);
+					// const temp = config.length > 0 ? [...config] : [];
+					const temp = [...config];
+					temp.push({});
 					setConfig(temp);
 					console.log(config);
 				}
@@ -136,37 +136,6 @@
 					<div>
 						<div id='table-container'>
 							<Table />
-							{config.map((entry, index) => {
-								console.log(index);
-								return (
-									<div className='gradient' key={index} index={index}>
-										<input
-											type='text'
-											className='gradient'
-											variable='name'
-											placeholder='Name'
-											onChange={handleChange}
-											defaultValue={entry.name}></input>
-										<input
-											type='number'
-											className='gradient'
-											variable='time'
-											placeholder='Time'
-											onBlur={handleSort}
-											onChange={handleChange}
-											defaultValue={entry.time}></input>
-										<select
-											className='gradient'
-											variable='file'
-											defaultValue={entry.file}
-											onClick={handleUpdate}
-											onChange={handleChange}>
-											<option value={0}>Choose a file</option>
-											<Options />
-										</select>
-									</div>
-								);
-							})}
 							<div>
 								<svg className='plus-button' onClick={() => addField()} viewBox='0 0 490 490'>
 									<g>
