@@ -10,24 +10,86 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<script type="text/babel">
-			function Table({ config }) {
+			function App() {
+				console.log('App called');
+				const [config, setConfig] = React.useState();
+				const [files, setFiles] = React.useState();
+
+				React.useEffect(() => {
+					fetch(`/config.json`)
+						.then((res) => res.json())
+						.then(({ config }) => setConfig(config ?? []));
+					updateFiles(setFiles);
+				}, []);
+
+				return (
+					<div>
+						<Table conf={[config, setConfig]} fils={[files, setFiles]} />
+					</div>
+				);
+			}
+
+			function Table({ conf, fils }) {
+				const [config, setConfig] = conf;
+				const [files, setFiles] = fils;
 				console.log('Table Called...');
-				if (!config) return 'Loading...';
+				if (!config) return 'Loading Config...';
+				if (!files) return 'Loading Files...';
+
 				if (config.length < 1) return 'Start by adding a field';
+
+				function handleChange() {
+					const prop = event.target.attributes.variable.value;
+					const index = event.target.parentElement.attributes.index.value;
+
+					if (prop === 'time') {
+						const time = event.target.value;
+
+						if (time === '24' || time < 0) {
+							event.target.value = 0;
+						} else if (time > 23) {
+							event.target.value = 23;
+						}
+					}
+
+					const newConfig = [...config];
+					newConfig[index][prop] = event.target.value;
+					setConfig(newConfig);
+					console.log(config);
+				}
 
 				return config.map((entry, index) => {
 					return (
 						<div key={index} index={index}>
-							<input type='text' variable='name' placeholder='Name'></input>
-							<input type='text' variable='time' placeholder='Time'></input>
-							<select variable='file' defaultValue={entry.file} onClick={handleUpdate} onChange={handleChange}>
+							<input type='text' variable='name' placeholder='Name' defaultValue={entry.name} onChange={handleChange}></input>
+							<input type='text' variable='time' placeholder='Time' defaultValue={entry.time} onChange={handleChange}></input>
+							<select variable='file' defaultValue={entry.file} onClick={() => updateFiles(setFiles)} onChange={handleChange}>
 								<option value={0}>Choose a file</option>
-								<Options />
+								<Options files={files} />
 							</select>
 						</div>
 					);
 				});
 			}
+
+			const Options = React.memo(function Options({ files }) {
+				return Object.keys(files).map((key, index) => {
+					return (
+						<option key={index} value={key}>
+							{key}
+						</option>
+					);
+				});
+			});
+
+			function updateFiles(setFiles) {
+				console.log(setFiles);
+				fetch(`/getfiles`)
+					.then((res) => res.json())
+					.then((json) => setFiles(json ?? []));
+			}
+
+			ReactDOM.render(<App />, root);
 		</script>
 	</body>
 </html>
