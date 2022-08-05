@@ -110,15 +110,6 @@ async function createConfig() {
 	});
 
 	open('http://localhost:8080');
-
-	const newConfig = {};
-
-	rl.question('Twitch Login:', (answer) => {
-		newConfig.login = answer;
-	});
-	rl.question();
-
-	fs.writeFileSync('./config.json', JSON.stringify(newConfig));
 }
 
 function getTime(index) {
@@ -216,7 +207,7 @@ async function main() {
 					toggle = !toggle;
 				}
 			} catch (e) {
-				console.log(`Can't show console.`);
+				console.log(`Can't toggle console.`);
 			}
 		} else if (action.seq_id === 1) {
 			process.exit();
@@ -227,11 +218,9 @@ async function main() {
 	var millsTillChange = getTime(count);
 
 	while (millsTillChange <= 0) {
-		console.log(`getTime() count: ${count}`);
 		if (count > 3) {
 			count = 1;
 			millsTillChange += 86400000;
-			console.log('bruh');
 		} else {
 			count++;
 			millsTillChange = getTime(count);
