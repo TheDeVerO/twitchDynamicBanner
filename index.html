@@ -166,14 +166,18 @@
 
 				function Test() {
 					console.log('called');
-					return <input type='number' onChange={handleTest}></input>;
-				}
 
-				function handleTest(event) {
-					// event.target.value = 'bruh';
-					if (event.target.value > 23) {
-						event.target.value = 23;
+					const [rnd, setRnd] = React.useState(0);
+
+					function handleTest(event) {
+						setRnd(rnd + 1);
 					}
+					return (
+						<div>
+							{rnd}
+							<input type='number' onChange={handleTest}></input>
+						</div>
+					);
 				}
 
 				return (
