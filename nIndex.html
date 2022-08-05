@@ -43,8 +43,16 @@
 					const index = event.target.parentElement.attributes.index.value;
 
 					if (prop === 'time') {
-						const time = event.target.value;
+						var time = event.target.value;
 
+						if (isNaN(time)) {
+							time = time.replaceAll(/[^\d]+/g, '');
+							event.target.value = time;
+						}
+
+						if (time.length > 2) {
+							event.target.value = time.slice(1, 3);
+						}
 						if (time === '24' || time < 0) {
 							event.target.value = 0;
 						} else if (time > 23) {
