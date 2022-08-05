@@ -144,7 +144,7 @@
 									type='number'
 									className='gradient'
 									variable='time'
-									placeholder='Time'
+									placeholder='Time (0-23)'
 									onBlur={handleSort}
 									onChange={handleChange}
 									defaultValue={entry.time}></input>
@@ -159,11 +159,9 @@
 
 				// Container adding function. Adds an entry to the config.
 				function addField() {
-					// const temp = config.length > 0 ? [...config] : [];
 					const temp = [...config];
 					temp.push({});
 					setConfig(temp);
-					console.log(config);
 				}
 
 				function Test() {
