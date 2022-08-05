@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+	<body>
+		<div id="root"></div>
+		<link href="/index.css" rel="stylesheet" type="text/css" />
+		<script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+		<script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+		<script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+		<script src="https://unpkg.com/axios@0.27.2/dist/axios.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<script type="text/babel">
+			function Table({ config }) {
+				console.log('Table Called...');
+				if (!config) return 'Loading...';
+				if (config.length < 1) return 'Start by adding a field';
+
+				return config.map((entry, index) => {
+					return (
+						<div key={index} index={index}>
+							<input type='text' variable='name' placeholder='Name'></input>
+							<input type='text' variable='time' placeholder='Time'></input>
+							<select variable='file' defaultValue={entry.file} onClick={handleUpdate} onChange={handleChange}>
+								<option value={0}>Choose a file</option>
+								<Options />
+							</select>
+						</div>
+					);
+				});
+			}
+		</script>
+	</body>
+</html>
