@@ -22,9 +22,16 @@
 					updateFiles(setFiles);
 				}, []);
 
+				function addContainer() {
+					setConfig([...config, {}]);
+				}
+
 				return (
 					<div>
 						<Table conf={[config, setConfig]} fils={[files, setFiles]} />
+						<button conf={[config, setConfig]} onClick={addContainer}>
+							Add Field
+						</button>
 					</div>
 				);
 			}
@@ -41,6 +48,7 @@
 				function handleChange() {
 					const prop = event.target.attributes.variable.value;
 					const index = event.target.parentElement.attributes.index.value;
+					const newConfig = [...config];
 
 					if (prop === 'time') {
 						var time = event.target.value;
@@ -60,27 +68,38 @@
 						}
 					}
 
-					const newConfig = [...config];
 					newConfig[index][prop] = event.target.value;
 					setConfig(newConfig);
+					console.log(config);
+				}
+
+				function handleRemove() {
+					const index = event.target.parentElement.attributes.index.value;
+					const newConfig = [...config];
+					newConfig.splice(index, 1);
+					setConfig(newConfig);
+					console.log(index);
 					console.log(config);
 				}
 
 				return config.map((entry, index) => {
 					return (
 						<div key={index} index={index}>
-							<input type='text' variable='name' placeholder='Name' defaultValue={entry.name} onChange={handleChange}></input>
-							<input type='text' variable='time' placeholder='Time' defaultValue={entry.time} onChange={handleChange}></input>
-							<select variable='file' defaultValue={entry.file} onClick={() => updateFiles(setFiles)} onChange={handleChange}>
+							{index}
+							<input type='text' variable='name' placeholder='Name' value={entry.name} onChange={handleChange}></input>
+							<input type='text' variable='time' placeholder='Time' value={entry.time} onChange={handleChange}></input>
+							<select variable='file' value={entry.file} onClick={() => updateFiles(setFiles)} onChange={handleChange}>
 								<option value={0}>Choose a file</option>
 								<Options files={files} />
 							</select>
+							<button onClick={handleRemove}>Remove</button>
 						</div>
 					);
 				});
 			}
 
-			const Options = React.memo(function Options({ files }) {
+			// const Options = React.memo(function Options({ files }) {
+			function Options({ files }) {
 				return Object.keys(files).map((key, index) => {
 					return (
 						<option key={index} value={key}>
@@ -88,7 +107,8 @@
 						</option>
 					);
 				});
-			});
+			}
+			// });
 
 			function updateFiles(setFiles) {
 				console.log(setFiles);
