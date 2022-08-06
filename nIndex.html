@@ -82,13 +82,27 @@
 					console.log(config);
 				}
 
+				function handleSort() {
+					if (config.length < 2) return;
+					const sortable = [...config].sort((a, b) => {
+						return a.time - b.time;
+					});
+					setConfig(sortable);
+				}
+
 				return config.map((entry, index) => {
 					return (
 						<div key={index} index={index}>
 							{index}
-							<input type='text' variable='name' placeholder='Name' value={entry.name} onChange={handleChange}></input>
-							<input type='text' variable='time' placeholder='Time' value={entry.time} onChange={handleChange}></input>
-							<select variable='file' value={entry.file} onClick={() => updateFiles(setFiles)} onChange={handleChange}>
+							<input type='text' variable='name' placeholder='Name' value={entry.name ?? ''} onChange={handleChange}></input>
+							<input
+								type='text'
+								variable='time'
+								placeholder='Time'
+								value={entry.time ?? ''}
+								onBlur={handleSort}
+								onChange={handleChange}></input>
+							<select variable='file' value={entry.file ?? 0} onClick={() => updateFiles(setFiles)} onChange={handleChange}>
 								<option value={0}>Choose a file</option>
 								<Options files={files} />
 							</select>
